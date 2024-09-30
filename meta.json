@@ -1,0 +1,79 @@
+{
+   "contributionName": "Lyngesen24",
+   "maintainer" : "Lars Relund <junk@relund.dk>",
+   "instanceGroups": [
+      {
+         "subfolder": "sp/2obj",
+         "class": "Minkowski Sum - Subset",
+         "objectives": 2,
+         "tags": [ "minkowskiSumSubset"],
+         "format": [ "json" ],
+         "desc": "Subsets used for the Minkowski sum problem.",
+         "creator" : "Lars Relund <junk@relund.dk>"
+      },
+      {
+         "subfolder": "sp/3obj",
+         "class": "Minkowski Sum - Subset",
+         "objectives": 3,
+         "tags": [ "minkowskiSumSubset"],
+         "format": [ "json" ],
+         "desc": "Subsets used for the Minkowski sum problem.",
+         "creator" : "Lars Relund <junk@relund.dk>"
+      },
+      {
+         "subfolder": "sp/4obj",
+         "class": "Minkowski Sum - Subset",
+         "objectives": 4,
+         "tags": [ "minkowskiSumSubset"],
+         "format": [ "json" ],
+         "desc": "Subsets used for the Minkowski sum problem.",
+         "creator" : "Lars Relund <junk@relund.dk>"
+      },
+      {
+         "subfolder": "sp/5obj",
+         "class": "Minkowski Sum - Subset",
+         "objectives": 5,
+         "tags": [ "minkowskiSumSubset"],
+         "format": [ "json" ],
+         "desc": "Subsets used for the Minkowski sum problem.",
+         "creator" : "Lars Relund <junk@relund.dk>"
+      },
+      {
+         "subfolder": "msp/2obj",
+         "class": "Minkowski Sum",
+         "objectives": 2,
+         "tags": ["minkowskiSum", "msp"],
+         "format": [ "json" ],
+         "desc": "Instance used for the Minkowski sum problem (a set of subsets).",
+         "creator" : "Lars Relund <junk@relund.dk>"
+      },
+      {
+         "subfolder": "msp/3obj",
+         "class": "Minkowski Sum",
+         "objectives": 3,
+         "tags": ["minkowskiSum", "msp"],
+         "format": [ "json" ],
+         "desc": "Instance used for the Minkowski sum problem (a set of subsets).",
+         "creator" : "Lars Relund <junk@relund.dk>"
+      },
+      {
+         "subfolder": "msp/4obj",
+         "class": "Minkowski Sum",
+         "objectives": 4,
+         "tags": ["minkowskiSum", "msp"],
+         "format": [ "json" ],
+         "desc": "Instance used for the Minkowski sum problem (a set of subsets).",
+         "creator" : "Lars Relund <junk@relund.dk>"
+      },
+      {
+         "subfolder": "msp/5obj",
+         "class": "Minkowski Sum",
+         "objectives": 5,
+         "tags": ["minkowskiSum", "msp"],
+         "format": [ "json" ],
+         "desc": "Instance used for the Minkowski sum problem (a set of subsets).",
+         "creator" : "Lars Relund <junk@relund.dk>"
+      }
+   ],
+   "resultContributions": ["Lyngesen24"]
+}
