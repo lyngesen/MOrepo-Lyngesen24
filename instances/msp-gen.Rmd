@@ -1,5 +1,5 @@
 ---
-title: "Generation of instance files for subproblems and combining them into MSP problems"
+title: "Generation of instance files"
 output: html_document
 date: "`r Sys.Date()`"
 editor_options: 
@@ -18,27 +18,13 @@ library(here)
 library(tidyverse)
 library(knitr)
 library(rgl)
-library(tikzDevice)
-options(tikzLatexPackages = c(
-   getOption('tikzLatexPackages'),
-   "\\usepackage{xspace}",
-   "\\newcommand{\\Y}{\\mathcal{Y}}",
-   "\\newcommand{\\Yn}{\\mathcal{Y}_{\\textnormal{N}}}",
-   "\\newcommand{\\Yns}{\\mathcal{Y}_{\\textnormal{s}}}",
-   "\\newcommand{\\Ynse}{\\mathcal{Y}_{\\textnormal{se}}}",
-   "\\newcommand{\\Ynsne}{\\mathcal{Y}_{\\textnormal{sne}}}",
-   "\\newcommand{\\Ynu}{\\mathcal{Y}_{\\textnormal{u}}}",
-   "\\newcommand{\\Yd}{\\mathcal{Y}_{\\textnormal{d}}}",
-   "\\newcommand{\\mL}{\\texttt{\\textsc{l}}\\xspace}",
-   "\\newcommand{\\mU}{\\texttt{\\textsc{u}}\\xspace}",
-   "\\newcommand{\\mM}{\\texttt{\\textsc{m}}\\xspace}"
-))
 rgl::setupKnitr()
 options(rgl.useNULL=TRUE)
 rgl::par3d("family" = "serif")
 opts_chunk$set(
   echo = FALSE,
-  message=FALSE, include = TRUE,
+  message=FALSE, 
+  include = TRUE,
   out.width = "99%", fig.width = 8, fig.align = "center", fig.asp = 0.8
 )
 ```
@@ -271,14 +257,13 @@ For each subproblem we calculate the statistics:
     - min and max value for each objective $i = 1,\ldots p$.
     - width $w_i$ = $max_i-min_i$ for each objective $i = 1,\ldots p$.
 
-Let us try to generate a set of subproblems saved as json files in folder subproblems:
-
-```{r, echo=TRUE, results='hide'}
+```{r, results='hide'}
+# Let us try to generate a set of subproblems saved as json files in folder `sp`:
 pS <- 2:5 # p values
-samplesS <- c(10, 50, 100, 200, 300) # nd points set size
-dub <- 10 # number of duplicates for each configuration
-deleteFiles()
-saveSubproblems(pS, samplesS, dub, overwrite = F)
+samplesS <- c(10, 50, 100, 200, 300)  # nd points set size
+dub <- 10     # number of duplicates for each configuration
+deleteFiles() # remove old files with errors
+saveSubproblems(pS, samplesS, dub, overwrite = F) # generate files if missing
 ```
 
 ```{r, include=FALSE}
@@ -321,9 +306,9 @@ dat %>%
 ```
 
 
-## Generation of problems
+## Generation of MS problems
 
-The problems generated consists of $2 \leq S\leq 5$ subproblems and is generated so provide a good test bed for a research question. The naming convention is `Lyngesen24-msp-<p>-<cards>-<gen-methods>_<S>_<id>.json`
+The problems generated consists of $2 \leq S\leq 5$ subproblems and is generated so provide a good test bed for the  research questions. The naming convention is `Lyngesen24-msp-<p>-<cards>-<gen-methods>_<S>_<id>.json`
 
 The following instance/problem groups are generated given:
 
@@ -382,7 +367,8 @@ saveProblemsAlg1 <- function(pS, mS, samplesS, methodS, dub, overwrite = TRUE) {
 ```
 
 
-```{r, echo=TRUE, results='hide'}
+```{r, results='hide'}
+# generate instances
 pS <- 2:5
 mS <- 2:5
 samplesS <- c(50, 100, 200, 300) # nd points set size

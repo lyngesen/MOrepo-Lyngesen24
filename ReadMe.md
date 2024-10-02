@@ -3,8 +3,24 @@
 The Minkowski sum problem (MSP) over $S$ subsets/subproblems can be stated as 
 $$\min\{y \mid y \in Y = \oplus_{s \in \{1,\ldots,S\}} Y^s  \}$$
 Each subset $Y^s$ contain a set of nondominated vectors with $p$ objectives.
-Note, the MSP is multi-objective in nature, since a solution to MSP is the nondominated set $Y_N$, 
-of the Minkowski sum $Y$. 
+Note, the MSP is multi-objective in nature, since a solution to MSP is the nondominated set $Y_N$
+(the nondominated sum), of the Minkowski sum $Y$. 
+
+For source code and further results see this [repository](https://github.com/lyngesen/minkowski_theory).
+
+## How to cite
+
+To cite this repository use 
+
+```
+@Electronic{MOrepo-Lyngesen24,
+  Title = {Minkowski sum problems (MOrepo-Lyngesen24)},
+  Author = {M. Lyngesen and L. R. Nielsen},
+  Url = {https://github.com/MCDMSociety/MOrepo-Lyngesen24},
+  Year = {2024}
+}
+```
+
 
 ## Test instances
 
@@ -90,9 +106,14 @@ The json file is structured like e.g. ´Lyngesen24-msp-4-200|200|200|200|200-lll
 ´´´
 Five instances for each objective $p=2,\ldots, 5$, number of subsets $S = 2, \ldots 5$, subset size 
 50, 100, 200, 300 and method u, l, m and lu are generated, resulting in 1280 MSP instances in 
-total. For further details see ??. 
+total. For further details see this [report](https://mcdmsociety.github.io/MOrepo-Lyngesen24/msp-gen.html). 
 
 
+## Results 
+
+The `results` folder contains subfolders with the non dominated sum (files end with `_Yn`). Under
+the `misc` entry the sizes of the generators are included in entry `genSize`. For further details 
+see this [report](https://mcdmsociety.github.io/MOrepo-Lyngesen24/results.html). 
 
 
 
