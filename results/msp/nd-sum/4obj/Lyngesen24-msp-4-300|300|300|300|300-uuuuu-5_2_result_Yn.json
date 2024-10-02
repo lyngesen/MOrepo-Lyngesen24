@@ -1,0 +1,24 @@
+{
+  "version": "1.0",
+  "contributionName": "Lyngesen24",
+  "instanceName": "Lyngesen24-msp-4-300|300|300|300|300-uuuuu-5_2",
+  "objectives": 4,
+  "objectiveType": ["int", "int", "int", "int"],
+  "comments": "The nondominated sum for the MSP (points not stored for large Yn sizes)",
+  "direction": ["min", "min", "min", "min"],
+  "optimal": true,
+  "valid": true,
+  "card": 520776,
+  "misc": {
+    "min": [139, 131, 157, 84],
+    "max": [48904, 49337, 49213, 49241],
+    "width": [48765, 49206, 49056, 49157],
+    "genSize": [
+      298,
+      300,
+      294,
+      300,
+      296
+    ]
+  }
+}
