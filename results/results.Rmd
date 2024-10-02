@@ -1,0 +1,551 @@
+---
+title: "Instance results"
+output:
+  html_document:
+    self_contained: yes
+    theme: united
+    highlight: tango
+    # df_print: paged
+    # code_folding: show
+    toc: true
+    toc_float: true
+    number_sections: true
+date: "`r Sys.Date()`"
+editor_options: 
+  chunk_output_type: console
+knit: (function(inputFile, encoding) { 
+    out_dir <- here::here("docs/");
+    rmarkdown::render(inputFile,
+                      encoding=encoding, 
+                      output_file=file.path(out_dir, 'results.html')) })
+---
+
+<style type="text/css">
+.main-container {
+  max-width: 1800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+```{r setup, include=FALSE}
+here::i_am("results/results.Rmd")  # specify relative path given project
+# remotes::install_github("relund/gMOIP")
+# remotes::install_github("fischuu/OjaNP")
+# library(gMOIP)
+library(DT)
+library(tidyverse)
+# library(knitr)
+# library(rgl)
+# rgl::setupKnitr()
+# options(rgl.useNULL=TRUE)
+# rgl::par3d("family" = "serif")
+conflicted::conflicts_prefer(plotly::layout)
+conflicted::conflicts_prefer(dplyr::filter)
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message=FALSE, include = TRUE, warning = FALSE,
+  out.width = "99%", fig.width = 12, fig.align = "center", fig.asp = 0.8
+)
+```
+
+This report contains different preliminary plots and tables that may be relevant for analyzing the results. Given a problem consisting of $m$ subproblems with $Y_N^s$ given for each subproblem $s$, we use a filtering algorithm to find $Y_N$. 
+
+The following instance/problem groups are generated given:
+
+  * $p=2,\ldots, 5$. 
+  * $S=2,\ldots 5$ where $S$ is the number of subproblems. 
+  * All subproblems have the same method config or half have method `u` and `l`.
+  * Five instances for each config. 
+
+```{r}
+datFull <- read_csv(here::here("results/results.csv"))
+```
+
+
+`r nrow(datFull)` problems have been solved.
+
+```{r}
+# remove results where have not solved all instances
+dat <- datFull |> 
+  group_by(p, m, method, spCard1) %>% 
+  filter(n() == 5) %>% 
+  ungroup() |> view()
+```
+
+## Size of $Y_N$
+
+What is $|Y_N|$ given the different methods of generating the set of nondominated points for the subproblems?
+
+```{r}
+dat %>% 
+  group_by(method) %>% 
+  summarise(mean_card = mean(card), n = n()) 
+```
+
+We use plots to check for effects of $p$, $m$ and subset size:
+
+```{r}
+dat %>% 
+  ggplot(aes(x = spAveCard, y = card, color = method)) +
+  geom_point() + 
+  stat_summary(fun="mean", geom="line") +
+  facet_grid(p ~ m, scales = "free", labeller =  "label_both")  + 
+  labs(title = "Number of nondominated points given subproblem cardinality",
+       y = "Cardinality Yn",
+       x = "Subproblem cardinality",
+       color = "Methods used to generate subproblems") +
+  theme(legend.position = "bottom") 
+```
+
+```{r}
+dat %>% 
+  ggplot(aes(x = spAveCard, y = card, color = method)) +
+  geom_point() + 
+  stat_summary(fun="mean", geom="line") +
+  facet_wrap(p ~ m, scales = "free", labeller =  "label_both")  + 
+  labs(title = "Number of nondominated points given subproblem cardinality",
+       y = "Cardinality Yn",
+       x = "Subproblem cardinality",
+       color = "Methods used to generate subproblems") +
+  theme(legend.position = "bottom") 
+```
+
+```{r}
+dat %>% 
+  ggplot(aes(x = spAveCard, y = card, color = method)) +
+  geom_point() + 
+  stat_summary(fun="mean", geom="line") +
+  facet_grid(p ~ m, scales = "free_y", labeller = "label_both")  + 
+  labs(title = "Number of nondominated points given subproblem cardinality (log2) scale",
+       y = "Cardinality Yn",
+       x = "Subproblem cardinality",
+       color = "Methods used to generate subproblems") +
+  theme(legend.position = "bottom") +
+  scale_y_continuous(trans = "log2")
+```
+
+
+```{r}
+dat %>% 
+  ggplot(aes(x = p, y = card, color = method)) +
+  geom_point() + 
+  stat_summary(fun="mean", geom="line") +
+  facet_grid(m ~ spAveCard, scales = "free_y", labeller =  "label_both")  + 
+  labs(title = "Number of nondominated points given subproblem cardinality",
+       y = "Cardinality Yn",
+       x = "p",
+       color = "Methods used to generate subproblems") +
+  theme(legend.position = "bottom") 
+```
+
+```{r}
+dat %>% 
+  ggplot(aes(x = m, y = card, color = method)) +
+  geom_point() + 
+  stat_summary(fun="mean", geom="line") +
+  facet_grid(p ~ spAveCard, scales = "free_y", labeller =  "label_both")  + 
+  labs(title = "Number of nondominated points given subproblem cardinality",
+       y = "Cardinality Yn",
+       x = "m",
+       color = "Methods used to generate subproblems") +
+  theme(legend.position = "bottom") 
+```
+
+```{r}
+dat %>%
+  ggplot(aes(x = spAveCard, y = card, color = factor(p))) +
+  geom_point() +
+  stat_summary(fun="mean", geom="line") +
+  facet_wrap(vars(method), scales = "free", labeller = "label_both")  +
+  labs(title = "Number of nondominated points given subproblem cardinality",
+       y = "Cardinality Yn",
+       x = "Subproblem cardinality",
+       color = "p") +
+  theme(legend.position = "bottom")
+```
+
+```{r}
+dat %>% 
+  ggplot(aes(x = spAvePctExt, y = card, color = factor(spAveCard), shape = method, group = method)) +
+    stat_summary(fun="mean", geom="line", color = "gray70") +
+    # stat_summary(aes(group = factor(spAveCard), color = factor(spAveCard)), fun="mean", geom="line", size = 0.05) +
+    geom_point() + 
+    facet_grid(p ~ m, scales = "free_y", labeller =  "label_both")  + 
+    labs(title = "Number of nondominated points",
+       y = "Cardinality Yn",
+       x = "Ave relative number of subproblem extreme",
+       color = "Subproblem cardinality") +
+  theme(legend.position = "bottom") 
+```
+
+### Regression fit
+
+Let us try to fit the results using function $y=c_1 s^{(c_2p)} m^{c_3p}$ (different functions was tried and this gave the highest $R^2$) for each method:
+
+```{r}
+# Fit exponential regression model
+library(tidymodels)
+tidymodels_prefer()
+lm_spec <- linear_reg()
+# lm_fit <- fit(lm_spec, log(card) ~ -1 + method + method:I(p * log(spAveCard)) + method:I(p * log(m)) + I(log(spAveCard)), data = dat)
+# summary(lm_fit)
+# tidy(lm_fit)
+
+regressions <- 
+  dat %>%
+  nest(data = c(-method)) %>% 
+  mutate(
+    fit = map(data, ~ lm(log(card) ~ I(p * log(spAveCard)) + I(p * log(m)), data = .x)),
+    tidied = map(fit, tidy),
+    glanced = map(fit, glance)
+  )
+
+regressions %>% 
+  select(-data) |> 
+  unnest(glanced)
+
+# test <- function(p, spAveCard, m) {
+#   regressions |> 
+#     mutate(p1 = map_dbl(fit, function(x) exp(predict(x, newdata = tibble(spAveCard = spAveCard, m = m, p = p,))))) |> 
+#     mutate(p2 = map_dbl(tidied, function(x) exp(x$estimate[1]) * spAveCard^(x$estimate[2] * p) * m^(x$estimate[3] * p)))
+#   # cf <- coef |> filter(method == "u") |> select(-method) |> unlist()
+#   # return(cf[1] * spAveCard^(cf[2] * p) * m^(cf[3] * p))
+# }
+# test(p = 3, spAveCard = 200, m = 3)
+
+coef <- regressions %>% 
+  select(-data) |> 
+  unnest(tidied) |> 
+  mutate(estimate = if_else(term == "(Intercept)", exp(estimate), estimate),
+         coef = rep(c("c1", "c2", "c3"), 4)) |> 
+  select(method, coef, estimate) |> 
+  pivot_wider(names_from = coef, values_from = estimate)
+coef
+
+# model <- lm(log(card) ~ -1 + method + method:I(p * log(spAveCard)) + method:I(p * log(m)), data = dat)
+# summary(model)
+# par(mfrow=c(2,2))
+# plot(model)
+```
+
+The parameters estimates are:
+
+```{r}
+model <- lm(log(card) ~ -1 + method + method:I(p * log(spAveCard)) + method:I(p * log(m)), data = dat)
+# some plots
+library(plotly)
+spAveCard <- seq(100, 300, by = 10)
+m <- 1:5
+p <- 3
+method <- factor("l", levels = unique(dat$method))
+card <- t(outer(spAveCard, m, function(spAveCard, m) exp(predict(model, newdata = tibble(spAveCard = spAveCard, m = m, p = p, method = method)))))
+dat1 <- expand_grid(m = m, p = p, spAveCard = spAveCard, method = method)
+dat1 <- bind_cols(dat1, card = exp(predict(model, newdata = dat1)))
+fig <- plot_ly() %>%
+  add_surface(x = spAveCard, y = m, z = card,
+    contours = list(
+    x = list(show = TRUE, color = 'lightgray', width = 2),
+    y = list(show = TRUE, color = 'lightgray', width = 2),
+    z = list(show = TRUE, color = 'lightgray', width = 2)
+  ), colorscale = "Viridis", opacity = 0.8)
+  # add_trace(type = 'scatter3d',
+  #           mode = 'markers',
+  #           data = dat1,
+  #           x = ~spAveCard, y = ~m, z = ~card,
+  #           marker = list(color = 'red', size = 5, symbol = 'circle'))
+
+method <- factor("m", levels = unique(dat$method))
+card <- t(outer(spAveCard, m, function(spAveCard, m) exp(predict(model, newdata = tibble(spAveCard = spAveCard, m = m, p = p, method = method)))))
+dat1 <- expand_grid(m = m, p = p, spAveCard = spAveCard, method = method)
+dat1 <- bind_cols(dat1, card = exp(predict(model, newdata = dat1)))
+fig <- fig |> add_surface(x = spAveCard, y = m, z = card,
+  contours = list(
+    x = list(show = TRUE, color = 'lightgray', width = 2),
+    y = list(show = TRUE, color = 'lightgray', width = 2),
+    z = list(show = TRUE, color = 'lightgray', width = 2)
+  ), colorscale = 'Rainbow', opacity = 1)
+
+method <- factor("ul", levels = unique(dat$method))
+card <- t(outer(spAveCard, m, function(spAveCard, m) exp(predict(model, newdata = tibble(spAveCard = spAveCard, m = m, p = p, method = method)))))
+dat1 <- expand_grid(m = m, p = p, spAveCard = spAveCard, method = method)
+dat1 <- bind_cols(dat1, card = exp(predict(model, newdata = dat1)))
+fig <- fig |> add_surface(x = spAveCard, y = m, z = card,
+  contours = list(
+    x = list(show = TRUE, color = 'lightgray', width = 2),
+    y = list(show = TRUE, color = 'lightgray', width = 2),
+    z = list(show = TRUE, color = 'lightgray', width = 2)
+  ), colorscale = 'heat', opacity = 1)
+
+method <- factor("u", levels = unique(dat$method))
+card <- t(outer(spAveCard, m, function(spAveCard, m) exp(predict(model, newdata = tibble(spAveCard = spAveCard, m = m, p = p, method = method)))))
+dat1 <- expand_grid(m = m, p = p, spAveCard = spAveCard, method = method)
+dat1 <- bind_cols(dat1, card = exp(predict(model, newdata = dat1)))
+fig <- fig |> add_surface(x = spAveCard, y = m, z = card,
+  contours = list(
+    x = list(show = TRUE, color = 'lightgray', width = 2),
+    y = list(show = TRUE, color = 'lightgray', width = 2),
+    z = list(show = TRUE, color = 'lightgray', width = 2)
+  ), colorscale = 'Cividis', opacity = 1) |> 
+  layout(
+    title = list(
+      x = 0.5, y = 0.9, z = 0.9, xanchor = "center",
+      text = "Yn for p = 3 and method u, m, ul and l (higest Yn)"  # Title text
+    ),
+    scene = list(
+    xaxis = list(range = range(spAveCard)),  # Set x-axis limits
+    yaxis = list(range = range(m),  # Set y-axis limits
+    zaxis = list(range = range(card))     # Set z-axis limits
+  ))) 
+
+fig
+```
+
+
+
+```{r}
+spAveCard <- seq(100, 300, by = 10)
+m <- 1:5
+p <- 4
+method <- factor("m", levels = unique(dat$method))
+card <- t(outer(spAveCard, m, function(spAveCard, m) exp(predict(model, newdata = tibble(spAveCard = spAveCard, m = m, p = p, method = method)))))
+dat1 <- expand_grid(m = m, p = p, spAveCard = spAveCard, method = method)
+dat1 <- bind_cols(dat1, card = exp(predict(model, newdata = dat1)))
+fig <- plot_ly() %>%
+  add_surface(x = spAveCard, y = m, z = card,
+    contours = list(
+    x = list(show = TRUE, color = 'lightgray', width = 2),
+    y = list(show = TRUE, color = 'lightgray', width = 2),
+    z = list(show = TRUE, color = 'lightgray', width = 2)
+  ), opacity = 0.8)
+
+p <- 3
+card <- t(outer(spAveCard, m, function(spAveCard, m) exp(predict(model, newdata = tibble(spAveCard = spAveCard, m = m, p = p, method = method)))))
+dat1 <- expand_grid(m = m, p = p, spAveCard = spAveCard, method = method)
+dat1 <- bind_cols(dat1, card = exp(predict(model, newdata = dat1)))
+fig <- fig |> add_surface(x = spAveCard, y = m, z = card,
+  contours = list(
+    x = list(show = TRUE, color = 'lightgray', width = 2),
+    y = list(show = TRUE, color = 'lightgray', width = 2),
+    z = list(show = TRUE, color = 'lightgray', width = 2)
+  ), opacity = 0.8) 
+
+p <- 2
+card <- t(outer(spAveCard, m, function(spAveCard, m) exp(predict(model, newdata = tibble(spAveCard = spAveCard, m = m, p = p, method = method)))))
+dat1 <- expand_grid(m = m, p = p, spAveCard = spAveCard, method = method)
+dat1 <- bind_cols(dat1, card = exp(predict(model, newdata = dat1)))
+fig |> add_surface(x = spAveCard, y = m, z = card,
+  contours = list(
+    x = list(show = TRUE, color = 'lightgray', width = 2),
+    y = list(show = TRUE, color = 'lightgray', width = 2),
+    z = list(show = TRUE, color = 'lightgray', width = 2)
+  ), opacity = 0.8) |> 
+  layout(
+    title = list(
+      x = 0.5, y = 0.9, z = 0.9, xanchor = "center",
+      text = "Yn for p = 2-4 and method m"  # Title text
+    ),
+    scene = list(
+    xaxis = list(range = range(spAveCard)),  # Set x-axis limits
+    yaxis = list(range = range(m),  # Set y-axis limits
+    zaxis = list(range = range(card))     # Set z-axis limits
+  ))) 
+```
+
+
+
+
+## Relative size of $Y_N$
+
+```{r}
+dat %>% 
+  ggplot(aes(x = spAveCard, y = card / ubCard, color = method)) +
+  geom_point() + 
+  stat_summary(fun="mean", geom="line") +
+  facet_grid(p ~ m, labeller = "label_both")  + 
+  labs(title = "Relative size of nondominated points compared to total enumeration given subproblem cardinality",
+       y = "Cardinality Yn",
+       x = "Subproblem cardinality",
+       color = "Methods used to generate subproblems") +
+  theme(legend.position = "bottom") 
+```
+
+```{r, eval=FALSE}
+dat %>% 
+  ggplot(aes(x = spAveCard, y = card / ubCard, color = method)) +
+  geom_point() + 
+  stat_summary(fun="mean", geom="line") +
+  facet_grid(p ~ m, labeller = "label_both")  + 
+  labs(title = "Relative size of nondominated points compared to total enumeration given subproblem cardinality (log2 scale)",
+       y = "Cardinality Yn",
+       x = "Subproblem cardinality",
+       color = "Methods used to generate subproblems") +
+  theme(legend.position = "bottom") +
+  scale_y_continuous(trans = "log2")
+```
+
+```{r}
+dat %>% 
+  ggplot(aes(y = card / ubCard, x = method, color = method)) +
+  geom_boxplot() +
+  facet_grid(p ~ m, labeller = label_both) +
+  labs(title = "Relative size of nondominated points compared to total enumeration",
+       y = "%",
+       x = "Method",
+       color = "Method(s) used to generate subproblems") +
+  theme(legend.position = "bottom")
+```
+
+
+```{r, eval=FALSE}
+dat %>% 
+  ggplot(aes(y = card / ubCard, x = method, color = method)) +
+  geom_boxplot() +
+  facet_grid(m ~ p, labeller = label_both) +
+  labs(title = "Relative size of nondominated points compared to total enumeration (log2 scale)",
+       y = "%",
+       x = "Method",
+       color = "Method(s) used to generate subproblems") +
+  theme(legend.position = "bottom") +
+  scale_y_continuous(trans = "log2")
+```
+
+
+<!-- ```{r} -->
+<!-- dat %>%  -->
+<!--   ggplot(aes(y = card / points_hypercube, x = method, color = method)) + -->
+<!--   geom_boxplot() + -->
+<!--   facet_grid(m ~ p, margins = T, labeller = label_both) + -->
+<!--   labs(title = "Relative size of nondominated points compared to total enumeration", -->
+<!--        y = "%", -->
+<!--        x = "Method", -->
+<!--        color = "Method(s) used to generate subproblems") + -->
+<!--   theme(legend.position = "bottom") -->
+<!-- ``` -->
+
+
+## Nondominated points classification
+
+We classify the nondominated points into, extreme, supported non-extreme and unsupported.
+
+```{r}
+dat %>% 
+  ggplot(aes(x = spAveCard, y = pctExt, color = method)) +
+  geom_point() + 
+  stat_summary(fun="mean", geom="line") +
+  facet_grid(p ~ m, margins = T, labeller = label_both)  + 
+  labs(title = "Relativ number of extreme points given subproblem cardinality",
+       y = "%",
+       x = "Subproblem cardinality",
+       color = "Methods used to generate subproblems") +
+  theme(legend.position = "bottom") 
+```
+
+```{r}
+dat %>% 
+  ggplot(aes(x = p, y = pctExt, color = method)) +
+  geom_point() + 
+  stat_summary(fun="mean", geom="line") +
+  facet_grid(spAveCard ~ m, margins = T, labeller = label_both)  + 
+  labs(title = "Relativ number of extreme points given subproblem cardinality",
+       y = "%",
+       x = "Subproblem cardinality",
+       color = "Methods used to generate subproblems") +
+  theme(legend.position = "bottom") 
+```
+
+```{r}
+dat %>% 
+  ggplot(aes(x = m, y = pctExt, color = method)) +
+  geom_point() + 
+  stat_summary(fun="mean", geom="line") +
+  facet_grid(p ~ spAveCard, margins = T, labeller = label_both)  + 
+  labs(title = "Relativ number of extreme points given subproblem cardinality",
+       y = "%",
+       x = "Subproblem cardinality",
+       color = "Methods used to generate subproblems") +
+  theme(legend.position = "bottom") 
+```
+
+```{r}
+dat %>% 
+  ggplot(aes(x = spAveCard, y = pctSup, color = method)) +
+  geom_point() + 
+  stat_summary(fun="mean", geom="line") +
+  facet_grid(p ~ m, margins = T, labeller = label_both)  + 
+  labs(title = "Relativ number of supported points given subproblem cardinality",
+       y = "%",
+       x = "Subproblem cardinality",
+       color = "Methods used to generate subproblems") +
+  theme(legend.position = "bottom") 
+```
+
+```{r}
+dat %>% 
+  ggplot(aes(x = method, y = pctExt, color = method)) +
+  geom_boxplot() + 
+  facet_grid(p ~ m, margins = T, labeller = label_both) +
+  labs(title = "Relativ number of extreme points given method",
+       y = "%",
+       x = "Method",
+       color = "Methods used to generate subproblems") +
+  theme(legend.position = "bottom")
+```
+
+```{r}
+dat %>% 
+  ggplot(aes(x = spAvePctExt, y = pctExt, color = method)) +
+  geom_point() + 
+  facet_grid(p ~ m, margins = T, labeller = label_both) +
+  labs(title = "Relativ number of extreme points",
+       y = "% extreme master",
+       x = "Avg. % extreme subproblems",
+       color = "Method(s) used to generate subproblems") +
+  theme(legend.position = "bottom")
+```
+
+
+```{r}
+dat %>% 
+  ggplot(aes(x = spAvePctExt, y = pctExt, color = factor(spAveCard), shape = method)) +
+  geom_point() + 
+  facet_grid(p ~ m, margins = T, labeller = label_both) +
+  labs(title = "Relativ number of extreme points",
+       y = "% extreme master",
+       x = "Avg. % extreme subproblems",
+       color = "Subproblem cardinality") +
+  theme(legend.position = "bottom")
+```
+
+
+```{r}
+dat %>% 
+  ggplot(aes(y = pctExt/spAvePctExt, x = spAveCard, color = method)) +
+  geom_point() + 
+  stat_summary(fun="mean", geom="line") +
+  facet_grid(p ~ m, margins = T, labeller = label_both) +
+  labs(title = "Relativ: % extreme master / % extreme subproblems",
+       y = "% extreme master / % extreme subproblems",
+       x = "Subproblem cardinality",
+       color = "Method(s) used to generate subproblems") +
+  theme(legend.position = "bottom")
+```
+
+Relative number of extreme:
+
+```{r}
+dat |> 
+  summarise(minPctEx = min(pctExt, na.rm = T), avePctExt = mean(pctExt, na.rm = T), maxPctEx = max(pctExt, na.rm = T)) 
+
+dat |> 
+  group_by(method) |> 
+  summarise(minPctEx = min(pctExt, na.rm = T), avePctExt = mean(pctExt, na.rm = T), maxPctEx = max(pctExt, na.rm = T)) |> 
+  arrange(desc(avePctExt))
+```
+
+
+## Problems solved for the analysis  
+
+```{r, out.width = "100%"}
+DT::datatable(dat, width = "100%", options = list(autoWidth = T, scrollX = TRUE, columnDefs = list(list(width = '250px', targets = c(1)))))
+```
