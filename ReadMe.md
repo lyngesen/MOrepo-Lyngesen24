@@ -17,7 +17,19 @@ To cite this repository use
   Title = {Minkowski sum problems (MOrepo-Lyngesen24)},
   Author = {M. Lyngesen and L. R. Nielsen},
   Url = {https://github.com/MCDMSociety/MOrepo-Lyngesen24},
-  Year = {2024}
+  Year = {2024},
+  Note = {Instance and result files at MOrepo.}
+}
+```
+
+To cite the Multi-Objective Optimization Repository use
+
+```
+@Electronic{MOrepo,
+  Title = {Multi-Objective Optimization Repository (MOrepo)},
+  Author = {L. R. Nielsen},
+  Url = {https://github.com/MCDMSociety/MOrepo},
+  Year = {2017},
 }
 ```
 
@@ -82,8 +94,8 @@ e.g. ´Lyngesen24-sp-2-10-m_1.json`:
 The `cls` entry contains strings `us` (unsupported), `se` (supported extreme) and `sne` (supported
 non-extreme). We use the R package `gMOIP` to generate subproblems. A subproblem is generated such
 that all nondominated points is integer and in the hypercube $[0, 10000]^p$. Ten instances were
-generated for each $p=2,\ldots, 5$, subset size 10, 50, 100, 200, 300 and method u, l and m. For
-further details see ??.
+generated for each $p=2,\ldots, 5$, subset size 10, 50, 100, 200, 300 and method u, l and m. For 
+further details see this [report](https://mcdmsociety.github.io/MOrepo-Lyngesen24/msp-gen.html). 
 
 
 ### MSP instances
@@ -114,6 +126,7 @@ total. For further details see this [report](https://mcdmsociety.github.io/MOrep
 The `results` folder contains subfolders with the non dominated sum (files end with `_Yn`). Under
 the `misc` entry the sizes of the generators are included in entry `genSize`. For further details 
 see this [report](https://mcdmsociety.github.io/MOrepo-Lyngesen24/results.html). 
+
 
 
 
