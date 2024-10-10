@@ -51,6 +51,7 @@ Each  subset/subproblem is generated using either method l, u or m:
 In total 600 subset instances was generated. A subset instance is named `Lyngesen24-sp-<p>-<subset
 size>-<method>_<id>.json` and stored in the `sp` folder. The json file is structured like
 e.g. ´Lyngesen24-sp-2-10-m_1.json`:
+
 ```
 {
   "points": [
@@ -91,6 +92,7 @@ e.g. ´Lyngesen24-sp-2-10-m_1.json`:
   }
 }
 ```
+
 The `cls` entry contains strings `us` (unsupported), `se` (supported extreme) and `sne` (supported
 non-extreme). We use the R package `gMOIP` to generate subproblems. A subproblem is generated such
 that all nondominated points is integer and in the hypercube $[0, 10000]^p$. Ten instances were
@@ -105,7 +107,8 @@ An MSP instances is defined by a set of subsets $Y^s$, $s = 1,\ldots,S$. Instanc
 `Lyngesen24-msp-<objectives>-<subset 1 size>|...|<subset S size>-<subset 1 gen method>...<subset S gen method>-S_<id>.json`. 
 
 The json file is structured like e.g. ´Lyngesen24-msp-4-200|200|200|200|200-lllll-5_1.json`:
-´´´
+
+```
 [
   {
     "V1": "subproblems/sp-4-200-l_6.json",
@@ -115,7 +118,8 @@ The json file is structured like e.g. ´Lyngesen24-msp-4-200|200|200|200|200-lll
     "V5": "subproblems/sp-4-200-l_5.json"
   }
 ]
-´´´
+```
+
 Five instances for each objective $p=2,\ldots, 5$, number of subsets $S = 2, \ldots 5$, subset size 
 50, 100, 200, 300 and method u, l, m and lu are generated, resulting in 1280 MSP instances in 
 total. For further details see this [report](https://mcdmsociety.github.io/MOrepo-Lyngesen24/msp-gen.html). 

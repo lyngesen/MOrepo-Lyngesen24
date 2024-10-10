@@ -455,15 +455,19 @@ details see this <a href="https://mcdmsociety.github.io/MOrepo-Lyngesen24/msp-ge
 1,\ldots,S\)</span>. Instances are named</p>
 <p><code>Lyngesen24-msp-&lt;objectives&gt;-&lt;subset 1 size&gt;|...|&lt;subset S size&gt;-&lt;subset 1 gen method&gt;...&lt;subset S gen method&gt;-S_&lt;id&gt;.json</code>.</p>
 <p>The json file is structured like
-e.g. ´Lyngesen24-msp-4-200|200|200|200|200-lllll-5_1.json`: ´´´ [ {
-“V1”: “subproblems/sp-4-200-l_6.json”, “V2”:
-“subproblems/sp-4-200-l_10.json”, “V3”: “subproblems/sp-4-200-l_3.json”,
-“V4”: “subproblems/sp-4-200-l_4.json”, “V5”:
-“subproblems/sp-4-200-l_5.json” }] ´´´ Five instances for each objective
-<span class="math inline">\(p=2,\ldots, 5\)</span>, number of subsets
-<span class="math inline">\(S = 2, \ldots 5\)</span>, subset size 50,
-100, 200, 300 and method u, l, m and lu are generated, resulting in 1280
-MSP instances in total. For further details see this <a href="https://mcdmsociety.github.io/MOrepo-Lyngesen24/msp-gen.html">report</a>.</p>
+e.g. ´Lyngesen24-msp-4-200|200|200|200|200-lllll-5_1.json`:</p>
+<pre><code>[
+  {
+    &quot;V1&quot;: &quot;subproblems/sp-4-200-l_6.json&quot;,
+    &quot;V2&quot;: &quot;subproblems/sp-4-200-l_10.json&quot;,
+    &quot;V3&quot;: &quot;subproblems/sp-4-200-l_3.json&quot;,
+    &quot;V4&quot;: &quot;subproblems/sp-4-200-l_4.json&quot;,
+    &quot;V5&quot;: &quot;subproblems/sp-4-200-l_5.json&quot;
+  }
+]</code></pre>
+<p>Five instances for each objective <span class="math inline">\(p=2,\ldots, 5\)</span>, number of subsets <span class="math inline">\(S = 2, \ldots 5\)</span>, subset size 50, 100,
+200, 300 and method u, l, m and lu are generated, resulting in 1280 MSP
+instances in total. For further details see this <a href="https://mcdmsociety.github.io/MOrepo-Lyngesen24/msp-gen.html">report</a>.</p>
 </div>
 </div>
 <div id="results" class="section level2">
