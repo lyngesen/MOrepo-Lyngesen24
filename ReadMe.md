@@ -6,7 +6,7 @@ Each subset $Y^s$ contain a set of nondominated vectors with $p$ objectives.
 Note, the MSP is multi-objective in nature, since a solution to MSP is the nondominated set $Y_N$
 (the nondominated sum), of the Minkowski sum $Y$. 
 
-For source code and further results see this [repository](https://github.com/lyngesen/minkowski_theory).
+For source code and further results see this [repository](https://github.com/lyngesen/MSP-generators).
 
 ## How to cite
 
